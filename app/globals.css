@@ -1,0 +1,512 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Fix for Radix UI components */
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}
+
+/* Select dropdown styling */
+[data-radix-select-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+[data-radix-select-item] {
+  color: white !important;
+  background: transparent !important;
+}
+
+[data-radix-select-item]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+[data-radix-select-item][data-highlighted] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+/* Dropdown menu styling */
+[data-radix-dropdown-menu-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-radix-dropdown-menu-item] {
+  color: white !important;
+}
+
+[data-radix-dropdown-menu-item]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Toast styling - Fix for black background */
+[data-sonner-toaster] {
+  --normal-bg: rgba(0, 0, 0, 0.9) !important;
+  --normal-border: rgba(255, 255, 255, 0.2) !important;
+  --normal-text: white !important;
+}
+
+[data-sonner-toast] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Radix Toast styling - Fix for black background */
+[data-radix-toast-root] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Sheet/Dialog overlay */
+[data-radix-dialog-overlay] {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Tabs styling */
+[data-radix-tabs-content] {
+  background: transparent !important;
+}
+
+[data-radix-tabs-list] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-radix-tabs-trigger] {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background: transparent !important;
+}
+
+[data-radix-tabs-trigger][data-state="active"] {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Switch component - Fix for black background */
+[data-radix-switch-root],
+button[role="switch"] {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-radix-switch-root][data-state="checked"],
+button[role="switch"][data-state="checked"] {
+  background: rgb(147, 51, 234) !important;
+  border-color: rgb(147, 51, 234) !important;
+}
+
+[data-radix-switch-root][data-state="unchecked"],
+button[role="switch"][data-state="unchecked"] {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-radix-switch-thumb],
+button[role="switch"] span {
+  background: white !important;
+}
+
+/* Popover styling */
+[data-radix-popover-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Tooltip styling */
+[data-radix-tooltip-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Fix for white backgrounds in components */
+.bg-background {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.bg-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.bg-popover {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.bg-muted {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.bg-secondary {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Input and textarea styling */
+input,
+textarea,
+select {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgb(147, 51, 234) !important;
+  box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2) !important;
+}
+
+/* Button variants */
+.bg-primary {
+  background: rgb(147, 51, 234) !important;
+}
+
+.bg-secondary {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+/* Badge styling */
+.bg-destructive {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: rgb(248, 113, 113) !important;
+}
+
+/* Checkbox styling */
+[data-radix-checkbox-root] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-radix-checkbox-root][data-state="checked"] {
+  background: rgb(147, 51, 234) !important;
+  border-color: rgb(147, 51, 234) !important;
+}
+
+/* Avatar styling */
+[data-radix-avatar-fallback] {
+  background: rgb(147, 51, 234) !important;
+  color: white !important;
+}
+
+/* Progress bar styling */
+[data-radix-progress-root] {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-radix-progress-indicator] {
+  background: rgb(147, 51, 234) !important;
+}
+
+/* Slider styling */
+[data-radix-slider-track] {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-radix-slider-range] {
+  background: rgb(147, 51, 234) !important;
+}
+
+[data-radix-slider-thumb] {
+  background: white !important;
+  border: 2px solid rgb(147, 51, 234) !important;
+}
+
+/* Separator styling */
+[data-radix-separator-root] {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Command palette styling */
+[cmdk-root] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[cmdk-input] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+[cmdk-item] {
+  color: white !important;
+}
+
+[cmdk-item][data-selected] {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Calendar styling */
+[data-radix-calendar-root] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+[data-radix-calendar-day] {
+  color: white !important;
+}
+
+[data-radix-calendar-day]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-radix-calendar-day][data-selected] {
+  background: rgb(147, 51, 234) !important;
+  color: white !important;
+}
+
+/* Accordion styling */
+[data-radix-accordion-content] {
+  background: transparent !important;
+}
+
+[data-radix-accordion-trigger] {
+  color: white !important;
+}
+
+[data-radix-accordion-trigger]:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Alert dialog styling */
+[data-radix-alert-dialog-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Context menu styling */
+[data-radix-context-menu-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-radix-context-menu-item] {
+  color: white !important;
+}
+
+[data-radix-context-menu-item]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Hover card styling */
+[data-radix-hover-card-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Menubar styling */
+[data-radix-menubar-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-radix-menubar-item] {
+  color: white !important;
+}
+
+[data-radix-menubar-item]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Navigation menu styling */
+[data-radix-navigation-menu-content] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Radio group styling */
+[data-radix-radio-group-item] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-radix-radio-group-item][data-state="checked"] {
+  background: rgb(147, 51, 234) !important;
+  border-color: rgb(147, 51, 234) !important;
+}
+
+/* Scroll area styling */
+[data-radix-scroll-area-scrollbar] {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-radix-scroll-area-thumb] {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Toggle styling */
+[data-radix-toggle-root] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+[data-radix-toggle-root][data-state="on"] {
+  background: rgb(147, 51, 234) !important;
+  color: white !important;
+}
+
+/* Toggle group styling */
+[data-radix-toggle-group-item] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+[data-radix-toggle-group-item][data-state="on"] {
+  background: rgb(147, 51, 234) !important;
+  color: white !important;
+}
+
+/* Additional fixes for specific classes */
+.data-\[state\=checked\]\:bg-primary[data-state="checked"] {
+  background: rgb(147, 51, 234) !important;
+}
+
+.data-\[state\=unchecked\]\:bg-input[data-state="unchecked"] {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.border.bg-background.text-foreground {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Toast specific fixes */
+li[role="status"] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+li[role="status"] .text-foreground\/50 {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+li[role="status"]:hover .text-foreground {
+  color: white !important;
+}
