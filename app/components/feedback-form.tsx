@@ -55,9 +55,8 @@ export default function FeedbackForm() {
     setError(false)
 
     try {
-      await fetch("https://anvigo.ru/api/bid/", {
+      const response = await fetch("https://anvigo.ru/api/bid/", {
         method: "POST",
-        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },
@@ -68,13 +67,22 @@ export default function FeedbackForm() {
         }),
       })
 
-      // С mode: 'no-cors' мы не можем читать ответ, предполагаем успех
-      setSubmitted(true)
-      setFormData({ name: "", email: "", message: "" })
-      toast({
-        title: "Запрос отправлен",
-        description: "Сообщение отправлено (no-cors режим)",
-      })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (data.success !== false) {
+        setSubmitted(true)
+        setFormData({ name: "", email: "", message: "" })
+        toast({
+          title: "Сообщение отправлено",
+          description: "Спасибо за обратную связь! Мы свяжемся с вами в ближайшее время.",
+        })
+      } else {
+        throw new Error(data.message || "Ошибка отправки")
+      }
     } catch (error) {
       console.error("Error submitting form:", error)
       setError(true)

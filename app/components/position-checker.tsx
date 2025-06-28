@@ -28,50 +28,6 @@ interface GeoLocation {
   date_update: string
 }
 
-// Демо-данные городов для no-cors режима
-const demoCities: GeoLocation[] = [
-  {
-    id: 1,
-    name: "Москва",
-    latitude: "55.75220",
-    longitude: "37.61520",
-    destination: "-1257786",
-    date_update: "2025-06-12",
-  },
-  {
-    id: 2,
-    name: "Санкт-Петербург",
-    latitude: "59.93750",
-    longitude: "30.31470",
-    destination: "-1198055",
-    date_update: "2025-06-12",
-  },
-  {
-    id: 3,
-    name: "Новосибирск",
-    latitude: "55.00840",
-    longitude: "82.93570",
-    destination: "-1198056",
-    date_update: "2025-06-12",
-  },
-  {
-    id: 4,
-    name: "Екатеринбург",
-    latitude: "56.84310",
-    longitude: "60.64540",
-    destination: "-1198057",
-    date_update: "2025-06-12",
-  },
-  {
-    id: 5,
-    name: "Казань",
-    latitude: "55.83040",
-    longitude: "49.06610",
-    destination: "-1198058",
-    date_update: "2025-06-12",
-  },
-]
-
 export default function PositionChecker() {
   const [productUrl, setProductUrl] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
@@ -86,24 +42,25 @@ export default function PositionChecker() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        await fetch("https://anvigo.ru/api/geo/", {
+        const response = await fetch("https://anvigo.ru/api/geo/", {
           method: "GET",
-          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
 
-        // С mode: 'no-cors' мы не можем читать ответ, используем демо-данные
-        setCities(demoCities)
-        console.log("Cities request sent, using demo data")
-        toast({
-          title: "Информация",
-          description: "Используются демо-данные городов (no-cors режим)",
-        })
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const data = await response.json()
+        setCities(data)
+        console.log("Cities loaded successfully:", data.length)
       } catch (error) {
         console.error("Failed to fetch cities from API:", error)
-        setCities(demoCities)
         toast({
           title: "Ошибка",
-          description: "Используются локальные данные городов",
+          description: "Не удалось загрузить список городов",
           variant: "destructive",
         })
       } finally {
@@ -128,9 +85,8 @@ export default function PositionChecker() {
     setResult(null)
 
     try {
-      await fetch("https://anvigo.ru/api/get_pos/", {
+      const response = await fetch("https://anvigo.ru/api/get_pos/", {
         method: "POST",
-        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },
@@ -141,21 +97,24 @@ export default function PositionChecker() {
         }),
       })
 
-      // С mode: 'no-cors' мы не можем читать ответ, показываем демо-результат
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
       const selectedCityData = cities.find((city) => city.id === Number.parseInt(selectedCity))
-      const randomPosition = Math.floor(Math.random() * 50) + 1
-      const randomPage = Math.ceil(randomPosition / 10)
 
-      // Случайно показываем найден товар или нет
-      const found = Math.random() > 0.3
-
-      if (found) {
+      if (data.found || data.position) {
         setResult({
           found: true,
           query: searchQuery,
           city: selectedCityData?.name,
-          position: randomPosition,
-          page: randomPage,
+          position: data.position,
+          page: Math.ceil(data.position / 10),
+        })
+        toast({
+          title: "Товар найден!",
+          description: `Позиция: ${data.position}`,
         })
       } else {
         setResult({
@@ -163,17 +122,22 @@ export default function PositionChecker() {
           query: searchQuery,
           city: selectedCityData?.name,
         })
+        toast({
+          title: "Товар не найден",
+          description: "Товар не найден в результатах поиска",
+          variant: "destructive",
+        })
       }
-
-      toast({
-        title: "Запрос отправлен",
-        description: "Показан демо-результат (no-cors режим)",
-      })
     } catch (error) {
       console.error("Error checking position:", error)
       setResult({
         found: false,
-        error: "Ошибка отправки запроса",
+        error: "Ошибка при проверке позиции",
+      })
+      toast({
+        title: "Ошибка",
+        description: "Не удалось проверить позицию товара",
+        variant: "destructive",
       })
     } finally {
       setLoading(false)
