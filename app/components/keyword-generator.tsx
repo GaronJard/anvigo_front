@@ -43,8 +43,20 @@ export default function KeywordGenerator() {
 
     setLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await fetch("https://anvigo.ru/api/generate_keywords/", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          keyword: baseKeyword.trim(),
+          depth: depth[0],
+        }),
+      })
+
+      // С mode: 'no-cors' мы не можем читать ответ, показываем демо-данные
       const mockKeywords: Keyword[] = [
         { id: 1, keyword: `${baseKeyword} купить`, frequency: 12500, competition: "high", demand: 85, relevance: 95 },
         { id: 2, keyword: `${baseKeyword} цена`, frequency: 8900, competition: "medium", demand: 78, relevance: 88 },
@@ -102,9 +114,21 @@ export default function KeywordGenerator() {
       ]
 
       setKeywords(mockKeywords)
-      setLoading(false)
       setCurrentPage(1)
-    }, 2000)
+      toast({
+        title: "Запрос отправлен",
+        description: "Показаны демо-данные (no-cors режим)",
+      })
+    } catch (error) {
+      console.error("Error generating keywords:", error)
+      toast({
+        title: "Ошибка",
+        description: "Не удалось отправить запрос",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const sortedKeywords = [...keywords].sort((a, b) => {

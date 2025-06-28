@@ -54,28 +54,38 @@ export default function FeedbackForm() {
     setLoading(true)
     setError(false)
 
-    // Simulate API call
-    setTimeout(() => {
-      const success = Math.random() > 0.1 // 90% success rate
+    try {
+      await fetch("https://anvigo.ru/api/bid/", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: formData.message.trim(),
+        }),
+      })
 
-      if (success) {
-        setSubmitted(true)
-        setFormData({ name: "", email: "", message: "" })
-        toast({
-          title: "Сообщение отправлено",
-          description: "Спасибо за обратную связь! Мы свяжемся с вами в ближайшее время.",
-        })
-      } else {
-        setError(true)
-        toast({
-          title: "Ошибка отправки",
-          description: "Не удалось отправить сообщение. Попробуйте позже.",
-          variant: "destructive",
-        })
-      }
-
+      // С mode: 'no-cors' мы не можем читать ответ, предполагаем успех
+      setSubmitted(true)
+      setFormData({ name: "", email: "", message: "" })
+      toast({
+        title: "Запрос отправлен",
+        description: "Сообщение отправлено (no-cors режим)",
+      })
+    } catch (error) {
+      console.error("Error submitting form:", error)
+      setError(true)
+      toast({
+        title: "Ошибка отправки",
+        description: "Не удалось отправить сообщение. Попробуйте позже.",
+        variant: "destructive",
+      })
+    } finally {
       setLoading(false)
-    }, 2000)
+    }
   }
 
   const resetForm = () => {

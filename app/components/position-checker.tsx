@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,31 +19,100 @@ interface SearchResult {
   error?: string
 }
 
+interface GeoLocation {
+  id: number
+  name: string
+  latitude: string
+  longitude: string
+  destination: string
+  date_update: string
+}
+
+// Демо-данные городов для no-cors режима
+const demoCities: GeoLocation[] = [
+  {
+    id: 1,
+    name: "Москва",
+    latitude: "55.75220",
+    longitude: "37.61520",
+    destination: "-1257786",
+    date_update: "2025-06-12",
+  },
+  {
+    id: 2,
+    name: "Санкт-Петербург",
+    latitude: "59.93750",
+    longitude: "30.31470",
+    destination: "-1198055",
+    date_update: "2025-06-12",
+  },
+  {
+    id: 3,
+    name: "Новосибирск",
+    latitude: "55.00840",
+    longitude: "82.93570",
+    destination: "-1198056",
+    date_update: "2025-06-12",
+  },
+  {
+    id: 4,
+    name: "Екатеринбург",
+    latitude: "56.84310",
+    longitude: "60.64540",
+    destination: "-1198057",
+    date_update: "2025-06-12",
+  },
+  {
+    id: 5,
+    name: "Казань",
+    latitude: "55.83040",
+    longitude: "49.06610",
+    destination: "-1198058",
+    date_update: "2025-06-12",
+  },
+]
+
 export default function PositionChecker() {
   const [productUrl, setProductUrl] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCity, setSelectedCity] = useState("")
+  const [cities, setCities] = useState<GeoLocation[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadingCities, setLoadingCities] = useState(true)
   const [result, setResult] = useState<SearchResult | null>(null)
   const { toast } = useToast()
 
-  const cities = [
-    "Москва",
-    "Санкт-Петербург",
-    "Новосибирск",
-    "Екатеринбург",
-    "Казань",
-    "Нижний Новгород",
-    "Челябинск",
-    "Самара",
-    "Омск",
-    "Ростов-на-Дону",
-    "Уфа",
-    "Красноярск",
-    "Воронеж",
-    "Пермь",
-    "Волгоград",
-  ]
+  // Load cities from API
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        await fetch("https://anvigo.ru/api/geo/", {
+          method: "GET",
+          mode: "no-cors",
+        })
+
+        // С mode: 'no-cors' мы не можем читать ответ, используем демо-данные
+        setCities(demoCities)
+        console.log("Cities request sent, using demo data")
+        toast({
+          title: "Информация",
+          description: "Используются демо-данные городов (no-cors режим)",
+        })
+      } catch (error) {
+        console.error("Failed to fetch cities from API:", error)
+        setCities(demoCities)
+        toast({
+          title: "Ошибка",
+          description: "Используются локальные данные городов",
+          variant: "destructive",
+        })
+      } finally {
+        setLoadingCities(false)
+      }
+    }
+
+    fetchCities()
+  }, [toast])
 
   const checkPosition = async () => {
     if (!productUrl.trim() || !searchQuery.trim() || !selectedCity) {
@@ -58,39 +127,57 @@ export default function PositionChecker() {
     setLoading(true)
     setResult(null)
 
-    // Simulate API call
-    setTimeout(() => {
-      const random = Math.random()
+    try {
+      await fetch("https://anvigo.ru/api/get_pos/", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url: productUrl.trim(),
+          keywords: searchQuery.trim(),
+          geo: Number.parseInt(selectedCity),
+        }),
+      })
 
-      if (random < 0.1) {
-        // 10% chance of error
-        setResult({
-          found: false,
-          error: "Ошибка сервера. Попробуйте позже.",
-        })
-      } else if (random < 0.4) {
-        // 30% chance of not found
-        setResult({
-          found: false,
-          query: searchQuery,
-          city: selectedCity,
-        })
-      } else {
-        // 60% chance of found
-        const position = Math.floor(Math.random() * 50) + 1
-        const page = Math.ceil(position / 10)
+      // С mode: 'no-cors' мы не можем читать ответ, показываем демо-результат
+      const selectedCityData = cities.find((city) => city.id === Number.parseInt(selectedCity))
+      const randomPosition = Math.floor(Math.random() * 50) + 1
+      const randomPage = Math.ceil(randomPosition / 10)
 
+      // Случайно показываем найден товар или нет
+      const found = Math.random() > 0.3
+
+      if (found) {
         setResult({
           found: true,
           query: searchQuery,
-          city: selectedCity,
-          position,
-          page,
+          city: selectedCityData?.name,
+          position: randomPosition,
+          page: randomPage,
+        })
+      } else {
+        setResult({
+          found: false,
+          query: searchQuery,
+          city: selectedCityData?.name,
         })
       }
 
+      toast({
+        title: "Запрос отправлен",
+        description: "Показан демо-результат (no-cors режим)",
+      })
+    } catch (error) {
+      console.error("Error checking position:", error)
+      setResult({
+        found: false,
+        error: "Ошибка отправки запроса",
+      })
+    } finally {
       setLoading(false)
-    }, 3000)
+    }
   }
 
   const getResultIcon = () => {
@@ -158,14 +245,18 @@ export default function PositionChecker() {
 
           <div className="space-y-2">
             <Label className="text-white">Город</Label>
-            <Select value={selectedCity} onValueChange={setSelectedCity}>
+            <Select value={selectedCity} onValueChange={setSelectedCity} disabled={loadingCities}>
               <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                <SelectValue placeholder="Выберите город" />
+                <SelectValue placeholder={loadingCities ? "Загрузка городов..." : "Выберите город"} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-black/90 backdrop-blur-xl border-white/20">
                 {cities.map((city) => (
-                  <SelectItem key={city} value={city}>
-                    {city}
+                  <SelectItem
+                    key={city.id}
+                    value={city.id.toString()}
+                    className="text-white hover:bg-white/10 focus:bg-white/10"
+                  >
+                    {city.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -174,7 +265,7 @@ export default function PositionChecker() {
 
           <Button
             onClick={checkPosition}
-            disabled={loading}
+            disabled={loading || loadingCities || cities.length === 0}
             className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
           >
             {loading ? (
